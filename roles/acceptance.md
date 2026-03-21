@@ -1,11 +1,11 @@
-# Чеклист приёмки
+# Acceptance Checklist
 
-Пройди по каждому пункту, отметь в чате каждый явно.
+Go through each item, explicitly confirm each one in the chat.
 
-1. Тесты покрывают ВСЕ уровни абстракции? (не только нижний)
-2. Прочитал код каждого теста? Assert'ы проверяют реальные значения?
-3. Моки только на границе HTTP-вызова?
-4. Упавшие тесты — чинили код, а не тесты?
-5. Если был новый мок/изменение существующего мока стороннего API — изучи реальное поведение API через его библиотеку или напрямую вызовом если библиотеки нет.
-6. Трассировка КАЖДОГО изменённого/созданного теста через реальный src/ код. Для каждого теста: пройди строка за строкой через реальный код, убедись что mock objects поддерживают execution path и реальная логика действительно выполняется, а не перехватывается раньше. Ноль падений при массовых изменениях — red flag, требующий особого внимания.
-7. E2E тесты с реальными внешними сервисами (OpenAI, etc.): если в `test/e2e/` есть тесты с `skipIf` — ОБЯЗАТЕЛЬНО прогони их с реальными ключами из `.env` перед приёмкой. Skipped E2E тест = непроверенный контракт с API. Шаг НЕ принимается пока E2E тесты не зелёные.
+1. Do tests cover ALL levels of abstraction? (not just the lowest layer)
+2. Have you read the code of every test? Do asserts check real values?
+3. Are mocks only at the HTTP boundary?
+4. Were failing tests fixed by changing code, not tests?
+5. If there was a new mock or change to an existing mock of a third-party API — study the real API behavior through its library or by calling it directly if no library exists.
+6. Trace EVERY changed/created test through the real src/ code. For each test: walk line by line through the real code, make sure mock objects support the execution path and real logic actually runs rather than being intercepted earlier. Zero failures with mass changes is a red flag requiring special attention.
+7. E2E tests with real external services (OpenAI, etc.): if `test/e2e/` has tests with `skipIf` — you MUST run them with real keys from `.env` before acceptance. A skipped E2E test = an unverified API contract. The step is NOT accepted until E2E tests are green.
