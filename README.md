@@ -36,6 +36,16 @@ claude --dangerously-skip-permissions --system-prompt "$(cat .claude/roles/revie
 # Come back to a ready-to-merge PR with green CI.
 ```
 
+## Demo project
+
+`my-awesome-project/` is a ready-to-go React + TypeScript + Vitest project with the framework already wired up. Roles are in `.claude/roles/`, empty `test/`, `prompts/`, and `scripts/` directories are in place, and `plan.md` has a simple first step.
+
+```bash
+cd my-awesome-project
+```
+
+Read `claude.log` to see the framework in action before setting it up in your own project.
+
 ## How it works
 
 1. You describe a feature or bug to the **reviewer**
