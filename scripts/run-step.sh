@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 #
-# Run tester or coder agent for a given prompt.
+# Run tester or coder agent for a given step.
 #
 # Usage:
-#   ./scripts/run-step.sh tester prompts/tester/fix-orphan-pr-1-tests.md
-#   ./scripts/run-step.sh coder  prompts/coder/fix-orphan-pr-1-code.md
+#   ./scripts/run-step.sh tester 12     # run tester for step 12
+#   ./scripts/run-step.sh coder 12      # run coder for step 12
 #
 set -euo pipefail
 
-ROLE="${1:?Usage: $0 <tester|coder> <prompt-path>}"
-PROMPT="${2:?Usage: $0 <tester|coder> <prompt-path>}"
+ROLE="${1:?Usage: $0 <tester|coder> <step-number>}"
+STEP="${2:?Usage: $0 <tester|coder> <step-number>}"
 
 # ── Validate role ──
 if [[ "$ROLE" != "tester" && "$ROLE" != "coder" ]]; then
@@ -17,18 +17,18 @@ if [[ "$ROLE" != "tester" && "$ROLE" != "coder" ]]; then
   exit 1
 fi
 
-# ── Validate prompt ──
-[[ ! -f "$PROMPT" ]] && { echo "ERROR: Prompt file not found: $PROMPT" >&2; exit 1; }
+# ── Find prompt ──
+PROMPT=$(ls prompts/${ROLE}/step${STEP}-*.md 2>/dev/null | head -1)
+[[ -z "$PROMPT" ]] && { echo "ERROR: No prompt found in prompts/${ROLE}/step${STEP}-*.md" >&2; exit 1; }
 
 ROLE_FILE=".claude/roles/${ROLE}.md"
 [[ ! -f "$ROLE_FILE" ]] && { echo "ERROR: Role file not found: $ROLE_FILE" >&2; exit 1; }
 
-LOGNAME=$(basename "$PROMPT" .md)
-PROJECT=$(basename "$(pwd)")
-LOGFILE="/tmp/${PROJECT}-${ROLE}-${LOGNAME}.log"
+LOGFILE="/tmp/marshall-${ROLE}-step${STEP}.log"
 
 echo "═══════════════════════════════════════"
 echo "  Role:   $ROLE"
+echo "  Step:   $STEP"
 echo "  Prompt: $PROMPT"
 echo "  Log:    $LOGFILE"
 echo "═══════════════════════════════════════"
