@@ -31,7 +31,7 @@ gh run list --branch <branch> --limit 3
 gh run view <run-id>
 gh run view <run-id> --job <job-id> --log-failed
 ```
-All three jobs (`test`, `docker-build`, `secrets-scan`) green before merging to main.
+All CI checks green before merging to main.
 Token: `GH_TOKEN` from `.env`.
 
 ### 3. After merge

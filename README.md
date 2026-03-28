@@ -22,13 +22,17 @@ These roles make cheating structurally impossible through file system boundaries
 ## Quick start
 
 ```bash
-# Copy into your project
-cp -r roles/ yourproject/.claude/roles/
-
-# Launch the reviewer — it runs everything else
+mkdir my-awesome-project
+mkdir my-awesome-project/.claude/
+cp -r roles/ my-awesome-project/.claude/roles/
+cp -r scripts/ my-awesome-project/scripts/
+cd my-awesome-project
+# Launch the reviewer — it sets up the project and runs everything else
 claude --dangerously-skip-permissions --system-prompt "$(cat .claude/roles/reviewer.md)"
 
-# Describe your feature. Approve the plan. Walk away.
+# The reviewer will ask what kind of project you want (React, Next.js, Express, etc.)
+# It scaffolds the project, installs deps, verifies lint/build/test pass.
+# Then describe your feature. Approve the plan. Walk away.
 # Come back to a ready-to-merge PR with green CI.
 ```
 
@@ -79,6 +83,7 @@ The core `reviewer.md` (~90 lines) is always present as the system prompt with s
 ```
 roles/
   reviewer.md                  # core identity, cycle, boundaries (~90 lines)
+  reviewer-init.md             # project initialization (first run, no package.json)
   reviewer-prompts-tester.md   # scenario matrix, test levels, mock rules
   reviewer-prompts-coder.md    # code prompt format, regression rules
   reviewer-review-tester.md    # how to review tester's commit
